@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+    <h1>{{ question.title }}</h1>
+</div>
+
+<articles class="d-flex gap-3 flex-column mb-4">
+    {% include 'layouts/questions.html'%}
+</articles>
+
+{% for answer in answers %}
+        
+    {% include 'layouts/answer.html' %}
+
+{% empty %}
+    <div class="alert alert-info">No answers yet!</div>
+
+{% endfor %}
+
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <div class="mt-4">
+        {% include 'layouts/pagination.html' %}
+    </div>
+{% endif %}
+
+<div class="mt-4">
+    <div class="mb-3">
+        <textarea class="form-control" rows="6" placeholder="Enter your answer here.."></textarea>
+    </div>
+    <button type="submit" class="btn text-white" style="background-color: #18881a">Answer</button>
+</div>
+
+{% endblock %}

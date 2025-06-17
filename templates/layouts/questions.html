@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-2">
+                <div style="height: 100px;" class="border mb-2 w-100">
+                    <img 
+                    src="{% static question.img_path  %}" 
+                    alt="img" 
+                    class="img-fluid">
+                </div>
+                <div>
+                    <input type="number" class="form-control" value="5">
+                </div>
+            </div>
+            <div class="col d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title">
+                        
+                        <a href="{% url 'question' question.id %}"> {{ question.title }}</a>
+                    </h5>
+                    <p class="card-text">
+
+                        {{ question.text }}
+
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <a href="{% url 'question' question.id %}">Answers (15)</a>
+                    </div>
+                    <div class="col">
+                        <span>Tags:</span>
+                        {% if question.tags %}
+                            {% for tag in question.tags %}
+                                <a href="{% url 'tag' tag %}" class="badge rounded-pill text-bg-primary me-1">{{ tag }}</a>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">No tags</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

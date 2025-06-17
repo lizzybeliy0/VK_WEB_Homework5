@@ -1,0 +1,98 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rere</title>
+    <link href="{% static '/css/bootstrap.css'  %}" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-secondary">
+        <div class="container">
+            <a class="navbar-brand" href="#">ReRe</a>
+
+            <form class="d-flex" role="search">
+                <input class="form-control me-5" type="search" placeholder="Search" aria-label="Search">
+                <a href="{% url 'ask' %}" class="btn text-white" style="background-color: #18881a">Ask!</a>
+            </form>
+
+
+            <div class="user-block">
+
+                {% if user.is_authenticated %}
+                    <div class="d-flex gap-3 align-items-center">
+                        <div style="width: 50px; height: 50px; border: 1px solid darkgrey; border-radius: 4px">
+                            <img src="avatar.jpg" style="width: 100%; height: 100%; object-fit: cover" alt="img">
+                        </div>
+                        <div class="content">
+                            <div class="content_name">{{ user.username }}</div>
+                            <div class="content__links">
+                                <a href="#">Settings</a>
+                                <a href="#">Log out</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="links d-flex align-items-center gap-5">
+                        <a href="{% url 'login' %}">Log in</a>
+                        <a href="{% url 'signup' %}">Register</a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </nav>
+
+    <main class="container mt-3">
+        <div class="row">
+            <section class="col vh-100">
+                
+
+                {% block content %}
+                {% endblock %}
+
+
+            </section>
+
+
+
+            <aside class="col-3">
+                <section class="mb-3">
+                    <h3>Popular tags</h3>
+                    <div>
+                        <span class="badge rounded-pill text-bg-primary">Primary</span>
+                        <span class="badge rounded-pill text-bg-secondary">Secondary</span>
+                        <span class="badge rounded-pill text-bg-success">Success</span>
+                        <span class="badge rounded-pill text-bg-danger">Danger</span>
+                        <span class="badge rounded-pill text-bg-warning">Warning</span>
+                        <span class="badge rounded-pill text-bg-info">Info</span>
+                        <span class="badge rounded-pill text-bg-light">Light</span>
+                        <span class="badge rounded-pill text-bg-dark">Dark</span>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Best members</h3>
+                    <div>
+                        <a class="d-block" href="#">Member</a>
+                        <a class="d-block" href="#">Member</a>
+                        <a class="d-block" href="#">Member</a>
+                        <a class="d-block" href="#">Member</a>
+                        <a class="d-block" href="#">Member</a>
+                        <a class="d-block" href="#">Member</a>
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+    </main>
+
+    <script src="{% static '/js/bootstrap.bundle.js'  %}"></script>
+</body>
+
+</html>
