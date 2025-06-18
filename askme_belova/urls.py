@@ -23,13 +23,14 @@ from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'), #именновынный URL - использ дальше в HTML
-    path('hot/', views.hot, name='hot'),
-    path('question/<int:question_id>/', views.question, name='question'),
+    path('', views.indexPage, name='index'),
+    path('hot/', views.hotPage, name='hot'),
+    path('question/<int:question_id>/', views.questionPage, name='question'),
     
-    path('tag/<str:tag_name>/', views.tag, name='tag'),
-    path('login/', views.login, name='login'),
-    path('signup/', views.signup, name='signup'),
-    path('ask/', views.ask, name='ask'),
-    path('logout/', views.logout, name='logout'),
+    path('tag/<str:tag_name>/', views.tagPage, name='tag'),
+    path('login/', views.loginPage, name='login'),
+    path('signup/', views.signUpPage, name='signup'),
+    path('ask/', views.askPage, name='ask'),
+    path('logout/', views.logoutPage, name='logout'),
+    path('settings', views.settingsPage, name='settings'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

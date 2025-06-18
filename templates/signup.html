@@ -1,73 +1,17 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 <div class="d-flex align-items-center mb-4">
     <h1>Registration</h1>
 </div>
+<form class="w-50" method="POST" action="{% url "signup" %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
 
-<form id="signForm" class="d-flex gap-3 flex-column me-2" novalidate>
-
-    <div class="login row">
-        <p class="col-2 d-flex align-items-center mb-4">Login</p>
-        <div class="col-10">
-            <input type="text" class="form-control" id="loginField" placeholder="dr_pepper"
-                maxlength="30">
-            <div id="loginError" class="error-message"></div>
-        </div>
-    </div>
-
-    <div class="email row">
-        <p class="col-2 d-flex align-items-center mb-4">Email</p>
-        <div class="col-10">
-            <input type="text" class="form-control" id="emailField" placeholder="drpepper@mail.ru">
-            <div id="emailError" class="error-message"></div>
-        </div>
-    </div>
-
-    <div class="nickName row">
-        <p class="col-2 d-flex align-items-center mb-4">NickName</p>
-        <div class="col-10">
-            <input type="text" class="form-control" id="nickNameField" maxlength="50"
-                placeholder="Dr. Pepper">
-        </div>
-    </div>
-
-    <div class="password row">
-        <p class="col-2 d-flex align-items-center mb-4">Password</p>
-        <div class="col-10">
-            <input type="password" class="form-control" id="passwordField" placeholder="********"
-                maxlength="15">
-            <div id="passwordError" class="error-message"></div>
-        </div>
-    </div>
-
-    <div class="repeat-Password row">
-        <p class="col-2 d-flex align-items-center mb-4">Repeat Password</p>
-        <div class="col-10">
-            <input type="password" class="form-control" id="repeat-PasswordField" placeholder="********"
-                maxlength="15">
-            <div id="repeat-PasswordError" class="error-message"></div>
-        </div>
-    </div>
-
-    <div class="avatar row">
-        <p class="col-2 d-flex align-items-center mb-4">Upload avatar</p>
-        <div class="col-5">
-            <input type="text" class="form-control" placeholder="Input path" readonly>
-        </div>
-        <div class="col-5">
-            <label for="avatarInput" class="btn text-white"
-                style="background-color: #18881a">choose</label>
-            <input type="file" id="avatarInput" accept="image/*">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-10 offset-2">
-            <button type="submit" class="btn text-white"
-                style="background-color: #18881a">Register!</button>
-        </div>
+    <div class="mb-3">
+        <button class="btn btn-success" maxlength="32" type="submit">Register!</button>
     </div>
 </form>
 {% endblock %}

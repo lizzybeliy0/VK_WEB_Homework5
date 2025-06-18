@@ -1,57 +1,33 @@
-from django.shortcuts import render, get_object_or_404
-from django.core.paginator import Paginator
-from .models import Question, Tag, Answer, QuestionVote, AnswerVote, Profile
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth import logout as auth_logout
-from django.shortcuts import redirect
+from django.shortcuts import render
+from app.context import *
 
-def paginate(objects_list, request, per_page=5):
-    paginator = Paginator(objects_list, per_page)
-    page_number = request.GET.get('page', 1)
-    return paginator.get_page(page_number)
 
-def index(request):
-    questions = Question.objects.latest()
-    return render(request, 'index.html', {
-        'page_obj': paginate(questions, request),
-        'tab': 'new'
-    })
+def indexPage(request):
+    return pageView(request, 'index.html', indexPageContext(request))
 
-def hot(request):
-    questions = Question.objects.popular()
-    return render(request, 'hot.html', {
-        'page_obj': paginate(questions, request),
-        'tab': 'hot'
-    })
+def hotPage(request):
+    return pageView(request, 'hot.html', hotPageContext (request))
 
-def question(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    answers = Answer.objects.for_question(question_id)
-    return render(request, 'question.html', {
-        'question': question,
-        'page_obj': paginate(answers, request)
-    })
+def tagPage(request, tag_name):
+    return pageView(request, 'tag.html', context=tagPageContext(request, tag_name))
 
-def tag(request, tag_name):
-    tag = get_object_or_404(Tag, name=tag_name)
-    questions = tag.questions.all()
-    return render(request, 'tag.html', {
-        'page_obj': paginate(questions, request),
-        'tab': 'tag',
-        'tag': tag
-    })
+def questionPage(request, question_id):
+    context = questionPageContext(request, question_id)
+    if not isinstance(context, dict):
+        return context 
+    return pageView(request, 'question.html', context)
 
-def login(request):
-    return render(request, 'login.html')
+def loginPage(request):
+    return pageView(request, 'login.html', context=loginPageContext(request))
 
-def signup(request):
-    return render(request, 'signup.html')
+def signUpPage(request):
+    return pageView(request, 'signup.html', context=registerPageContext(request))
 
-def ask(request):
-    return render(request, 'ask.html')
+def askPage(request):
+    return pageView(request, 'ask.html', context=askPageContext(request))
 
-def logout(request):
-    auth_logout(request)
-    return redirect(reverse('index') + "?after=logout")
+def settingsPage(request):
+    return pageView(request, 'settings.html', context=settingsContext(request))
 
+def logoutPage(request):
+    return logoutContext(request)

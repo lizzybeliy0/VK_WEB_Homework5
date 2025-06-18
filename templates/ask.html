@@ -1,44 +1,16 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% load django_bootstrap5 %}
 
 {% block content %}
     <div class="d-flex align-items-center mb-4">
         <h1>New Question</h1>
     </div>
-
-    <form id="questionForm" class="d-flex gap-3 flex-column me-2" novalidate>
-        <div class="title row">
-            <p class="col-1 d-flex align-items-center mb-4">Title</p>
-            <div class="col-11">
-                <input type="text" class="form-control" id="questionTitle" placeholder="How to ..?"
-                    maxlength="200" required>
-                <div id="titleError" class="error-message"></div>
-            </div>
-        </div>
-
-        <div class="question row">
-            <p class="col-1 d-flex align-items-center mb-4">Text</p>
-            <div class="col-11">
-                <textarea class="form-control" id="questionText" rows="7"
-                    placeholder="I do not know how. Please, help." maxlength="2000" required></textarea>
-                <div id="questionError" class="error-message"></div>
-            </div>
-        </div>
-
-        <div class="tags row">
-            <p class="col-1 d-flex align-items-center mb-4">Tags</p>
-            <div class="col-11">
-                <input type="text" class="form-control" id="questionTags"
-                    placeholder="javascript python django" maxlength="100">
-                <div id="tagsError" class="error-message"></div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-11 offset-1">
-                <button type="submit" class="btn text-white" style="background-color: #18881a">ASK!</button>
-            </div>
-        </div>
-    </form>
-
+<form class="w-60" method="POST" action="">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <div class="mb-3">
+        <button class="btn btn-success" maxlength="32" type="submit">ASK!</button>
+    </div>
+</form>
 {% endblock %}
