@@ -3,7 +3,8 @@ from django.core.paginator import Paginator
 from .models import Question, Tag, Answer, QuestionVote, AnswerVote, Profile
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
+from django.shortcuts import redirect
 
 def paginate(objects_list, request, per_page=5):
     paginator = Paginator(objects_list, per_page)
@@ -49,4 +50,8 @@ def signup(request):
 
 def ask(request):
     return render(request, 'ask.html')
+
+def logout(request):
+    auth_logout(request)
+    return redirect(reverse('index') + "?after=logout")
 
