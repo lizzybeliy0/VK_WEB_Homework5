@@ -6,17 +6,23 @@
             <div class="col-2">
                 <div style="height: 120px;" class="border mb-2 w-100">
                     <img 
-                    src="{% static question.img_path  %}" 
+                    src="{% static '/img/question.jpg'  %}" 
                     alt="img" 
                     class="img-fluid">
                 </div>
-                <div>
-                    <div class="d-flex align-items-center gap-1 me-2" style="min-width: 120px;">
-                        <input type="number" class="form-control d-inline-block" value="{{ question.get_rating }}" readonly style="width: 70px;">
-                        <button class="btn btn-success btn-sm">+</button>
-                        <button class="btn btn-danger btn-sm">-</button>
-                    </div>
+
+                <div class="d-flex align-items-center gap-1 me-2" style="min-width: 120px;">
+                    <input type="number" id="question_{{ question.id }}_likes" class="form-control d-inline-block" value="{{ question.get_rating }}" readonly style="width: 70px;">
+                    <button class="btn btn-success btn-sm"
+                        onclick="onLikeButtonClick(event);"
+                        data-question-id="{{ question.id }}"
+                        data-value="1">+</button>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="onLikeButtonClick(event);"
+                        data-question-id="{{ question.id }}"
+                        data-value="-1">-</button>
                 </div>
+
             </div>
             <div class="col d-flex flex-column justify-content-between">
                 <div>

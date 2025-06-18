@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.urls import reverse
+from django.http import JsonResponse
 
 from app.models import *
 from app.forms import *
@@ -30,6 +31,8 @@ def pageView(request, template, context):
 
 def indexPageContext(request):
     page = paginate(Question.objects.latest(), request)
+    for q in page.object_list:
+        q.has_like_me = q.has_like(request.user)
     return {
         "questions": page.object_list,
         "page": page,
@@ -40,6 +43,8 @@ def indexPageContext(request):
 
 def hotPageContext(request):
     page = paginate(Question.objects.popular(), request)
+    for q in page.object_list:
+        q.has_like_me = q.has_like(request.user)
     return {
         "questions": page.object_list,
         "page": page,
@@ -51,6 +56,8 @@ def hotPageContext(request):
 def tagPageContext(request, tag_name):
     tag = get_object_or_404(Tag, name=tag_name)
     page = paginate(tag.questions.all(), request)
+    for q in page.object_list:
+        q.has_like_me = q.has_like(request.user)
     return {
         "tag": tag,
         "questions": page.object_list,
@@ -67,9 +74,14 @@ def questionPageContext(request, question_id):
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(request.user, question)
-            pageIndex = abs(question.answers.count() - 1) // 5 + 1
+            all_answers = list(question.answers.all().order_by('created_at').values_list('id', flat=True))
+            per_page = 5
+            idx = all_answers.index(answer.id)
+            pageIndex = idx // per_page + 1
             return redirect(reverse("question", args=[question.id]) + f"?page={pageIndex}#answer_{answer.id}")
     page = paginate(question.answers.all(), request)
+    for a in page.object_list:
+        a.has_like_me = a.has_like(request.user)
     return {
         "form": form,
         "question": question,
@@ -147,20 +159,67 @@ def askPageContext(request):
         "popular_authors": Profile.objects.popular(),
     }
 
-def defaultContext(request):
-    return {
-        "popular_tags": Tag.objects.popular(),
-        "popular_authors": Profile.objects.popular(),
-    }
-
-def defaultNotLoginContext(request):
-    return {
-        "popular_tags": Tag.objects.popular(),
-        "popular_authors": Profile.objects.popular(),
-    }
 
 def logoutContext(request):
     auth.logout(request)
     return redirect(reverse('index') + "?after=logout")
 
 
+
+def createLikeResponse(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({ "error": 401 }, status=401)
+    
+    if request.method == "POST":
+        likeType = request.POST.get("type")
+        id = request.POST.get("id")
+        value = int(request.POST.get("value", 1))
+        if likeType == '0':
+            question = get_object_or_404(Question, id=id)
+            like, createdNew = QuestionVote.objects.get_or_create(
+                question=question,
+                voter=request.user.profile,
+                defaults={'value': value}
+            )
+            if not createdNew:
+                if like.value == value:
+                    like.delete()
+                else:
+                    like.value = value
+                    like.save()
+            return JsonResponse({ "likes_count": question.get_rating() })
+        else:
+            answer = get_object_or_404(Answer, id=id)
+            like, createdNew = AnswerVote.objects.get_or_create(
+                answer=answer,
+                voter=request.user.profile,
+                defaults={'value': value}
+            )
+            if not createdNew:
+                if like.value == value:
+                    like.delete()
+                else:
+                    like.value = value
+                    like.save()
+            return JsonResponse({ "likes_count": answer.get_rating() })
+    else:
+        return JsonResponse({ "error": 405 })
+    
+def setRightAnswerResponse(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({ "error": 401 }, status=401)
+    
+    if request.method == "POST":
+        questionId = request.POST.get("question")
+        rightAnswerId = request.POST.get("answer")
+        
+        question = get_object_or_404(Question, id=questionId)
+        rightAnswer = get_object_or_404(Answer, id=rightAnswerId)
+        
+        if question.author == request.user.profile:
+            question.changeRightAnswer(rightAnswer)
+            return JsonResponse({ "error": 0 })
+        else:
+            return JsonResponse({ "error": 403 })
+    else:
+        return JsonResponse({ "error": 405 })

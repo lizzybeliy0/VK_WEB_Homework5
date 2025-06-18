@@ -33,4 +33,8 @@ urlpatterns = [
     path('ask/', views.askPage, name='ask'),
     path('logout/', views.logoutPage, name='logout'),
     path('settings', views.settingsPage, name='settings'),
+
+    path('question/right', views.setRightAnswer, name="right_answer"),
+    path('make_like', views.createLike, name="like"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

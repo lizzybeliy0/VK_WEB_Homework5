@@ -24,6 +24,7 @@ class QuestionManager(models.Manager):
         return self.annotate(
             rating=Coalesce(models.Sum('votes__value'), 0)
         ).order_by("-rating", "-created_at")
+    
 
 class AnswerManager(models.Manager):
     def for_question(self, question_id):
@@ -31,7 +32,7 @@ class AnswerManager(models.Manager):
             likes_count=models.Count("votes", filter=models.Q(votes__value=1))
         ).order_by("-is_accepted", "-likes_count", "created_at")
     
-    
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,6 +52,11 @@ class Question(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     objects = QuestionManager()
+
+    def changeRightAnswer(self, right_answer):
+        self.answers.update(is_accepted=False)
+        right_answer.is_accepted = True
+        right_answer.save()
     
     def has_like(self, user):
         if not user.is_authenticated:
@@ -60,14 +66,6 @@ class Question(models.Model):
     def get_rating(self):
         return self.votes.aggregate(total=models.Sum('value'))['total'] or 0
 
-    def vote(self, user, value):
-        if not user.is_authenticated:
-            return False
-        profile = user.profile
-        vote, created = QuestionVote.objects.get_or_create(question=self, voter=profile)
-        vote.value = value
-        vote.save()
-        return True
 
 class Answer(models.Model):
     content = models.TextField()
@@ -86,14 +84,6 @@ class Answer(models.Model):
     def get_rating(self):
         return self.votes.aggregate(total=models.Sum('value'))['total'] or 0
 
-    def vote(self, user, value):
-        if not user.is_authenticated:
-            return False
-        profile = user.profile
-        vote, created = AnswerVote.objects.get_or_create(answer=self, voter=profile)
-        vote.value = value
-        vote.save()
-        return True
 
 class QuestionVote(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='votes')
