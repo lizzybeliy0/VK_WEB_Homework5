@@ -12,14 +12,19 @@
 
                     <div class="d-flex align-items-center gap-1 me-2" style="min-width: 120px;">
                         <input type="number" id="answer_{{ answer.id }}_likes" class="form-control d-inline-block" value="{{ answer.get_rating }}" readonly style="width: 70px;">
-                        <button class="btn btn-success btn-sm"
-                            onclick="onLikeButtonClick(event);"
-                            data-answer-id="{{ answer.id }}"
-                            data-value="1">+</button>
-                        <button class="btn btn-danger btn-sm"
-                            onclick="onLikeButtonClick(event);"
-                            data-answer-id="{{ answer.id }}"
-                            data-value="-1">-</button>
+                        {% if request.user.is_authenticated %}
+                            <button class="btn btn-success btn-sm"
+                                onclick="onLikeButtonClick(event);"
+                                data-answer-id="{{ answer.id }}"
+                                data-value="1">+</button>
+                            <button class="btn btn-danger btn-sm"
+                                onclick="onLikeButtonClick(event);"
+                                data-answer-id="{{ answer.id }}"
+                                data-value="-1">-</button>
+                        {% else %}
+                            <button class="btn btn-success btn-sm" disabled title="Enter in system to vote">+</button>
+                            <button class="btn btn-danger btn-sm" disabled title="Enter in system to vote">-</button>
+                        {% endif %}
                     </div>
   
                 </div>

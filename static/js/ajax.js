@@ -9,6 +9,11 @@ function getCSRFToken() {
 }
 
 function onLikeButtonClick(event) {
+    
+    if (event.target.disabled) {
+        return;
+    }
+    
     const token = getCSRFToken();
     if (token) {
         const questionId = event.target.dataset.questionId;
