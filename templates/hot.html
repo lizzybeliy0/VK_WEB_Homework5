@@ -9,7 +9,7 @@
 
 <articles class="d-flex gap-3 flex-column">
 
-    {% for question in questions %}
+    {% for question in page_obj %}
         {% include 'layouts/questions.html' %}
     {% endfor %}
 

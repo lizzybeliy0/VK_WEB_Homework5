@@ -3,11 +3,11 @@
 
 {% block content %}
 <div class="d-flex align-items-center gap-3 mb-4">
-    <h1>Questions tagged: {{ tag_name }}</h1>
+    <h1>Questions tagged: {{ tag.name }}</h1>
 </div>
 
 <articles class="d-flex gap-3 flex-column">
-    {% for question in questions %}
+    {% for question in page_obj %}
         {% include 'layouts/questions.html' %}
     {% empty %}
         <div class="alert alert-info">No questions with this tag yet!</div>

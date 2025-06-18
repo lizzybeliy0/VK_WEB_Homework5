@@ -4,14 +4,18 @@
     <div class="card-body">
         <div class="row">
             <div class="col-2">
-                <div style="height: 100px;" class="border mb-2 w-100">
+                <div style="height: 120px;" class="border mb-2 w-100">
                     <img 
                     src="{% static question.img_path  %}" 
                     alt="img" 
                     class="img-fluid">
                 </div>
                 <div>
-                    <input type="number" class="form-control" value="5">
+                    <div class="d-flex align-items-center gap-1 me-2" style="min-width: 120px;">
+                        <input type="number" class="form-control d-inline-block" value="{{ question.get_rating }}" readonly style="width: 70px;">
+                        <button class="btn btn-success btn-sm">+</button>
+                        <button class="btn btn-danger btn-sm">-</button>
+                    </div>
                 </div>
             </div>
             <div class="col d-flex flex-column justify-content-between">
@@ -22,23 +26,23 @@
                     </h5>
                     <p class="card-text">
 
-                        {{ question.text }}
+                        {{ question.content }}
 
                     </p>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <a href="{% url 'question' question.id %}">Answers (15)</a>
+                        <a href="{% url 'question' question.id %}">Answers ({{ question.answers.count }})</a>
                     </div>
                     <div class="col">
                         <span>Tags:</span>
-                        {% if question.tags %}
-                            {% for tag in question.tags %}
-                                <a href="{% url 'tag' tag %}" class="badge rounded-pill text-bg-primary me-1">{{ tag }}</a>
-                            {% endfor %}
-                        {% else %}
+                        {% for tag in question.tags.all %}
+                            <a href="{% url 'tag' tag.name %}" class="badge rounded-pill text-bg-primary me-1">
+                                {{ tag.name }}
+                            </a>
+                        {% empty %}
                             <span class="text-muted">No tags</span>
-                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>

@@ -10,13 +10,10 @@
     {% include 'layouts/questions.html'%}
 </articles>
 
-{% for answer in answers %}
-        
-    {% include 'layouts/answer.html' %}
-
+{% for answer in page_obj %}
+    {% include 'layouts/answer.html' with answer=answer %}
 {% empty %}
     <div class="alert alert-info">No answers yet!</div>
-
 {% endfor %}
 
 
